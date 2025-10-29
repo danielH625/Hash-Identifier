@@ -13,7 +13,7 @@ def open_file(hashes):
 
 
 def help():
-  print("Usage: python3 [option] [argument]")
+  print("Usage: python3 hash-identifier.py [option] [argument]")
   print(" The options are:")
   print("  -h\t\tShow help options")
   print("  -f\t\tRead the hashes from a file")
