@@ -1,9 +1,32 @@
 #!/bin/python3
-import sys
+import argparse
 
 import requests
 
 
+# -- CREATES ALL THE COMMAND LINE ARGUMENTS --
+def parse_args():
+  p = argparse.ArgumentParser(
+      description=
+      "Hash Identifier - Takes an individual hash or a wordlist of hashes and identifies the hash type"
+  )
+  # -- GROUP FORCES AT LEAST ONE OF THE COMMAND LINE ARGUMENTS TO BE USED OR IT WILL ERROR AND CALL HELP --
+  group = p.add_mutually_exclusive_group(required=True)
+  group.add_argument(
+      "-s",
+      "--string",
+      help="Hash: Provide the individual hash (only one, if more add to a file)"
+  )
+  group.add_argument(
+      "-f",
+      "--file",
+      help=
+      "File: Provide the file name with the list of hashes (Each hash on a new line)"
+  )
+  return p.parse_args()
+
+
+# -- OPENS THE SPECIFED FILE --
 def open_file(hashes):
   file_handle = open(hashes, "rt")
   all_lines = file_handle.readlines()
@@ -12,37 +35,39 @@ def open_file(hashes):
   return all_lines
 
 
-def help():
-  print("Usage: python3 hash-identifier.py [option] [argument]")
-  print(" The options are:")
-  print("  -h\t\tShow help options")
-  print("  -f\t\tRead the hashes from a file")
-  print("  -s\t\tInput a single hash in the cmd line")
-
-
-def hash_file():
-  hashes = sys.argv[2]
-  all_lines = open_file(hashes)
+# -- RUNS THE HASH CHECK ON A FILE --
+def hash_file(hashes_file):
+  all_lines = open_file(hashes_file)
 
   for line in all_lines:
     r = requests.get(f'https://hashes.com/en/api/identifier?hash={line}')
-    print(r.text)
+    better_output(r)
 
 
-def hash_input():
-  hash = sys.argv[2]
+# -- RUNS A HASH CHECK ON A INDIVIDUAL HASH --
+def hash_input(hash):
   r = requests.get(f'https://hashes.com/en/api/identifier?hash={hash}')
-  print(r.text)
+  better_output(r)
 
 
-try:
-  flag = sys.argv[1]
+# -- TAKES THE REQUEST CUTS OUT THE ALGORITHM TYPE AND PRINTS IT WITHOUT ALL THE FLUFF --
+def better_output(r):
+  data = r.json()
+  algorithms = data["algorithms"]
+  hash_type = " ".join(algorithms)
+  print(f"[+] Hash algorithm: {hash_type}")
 
-  if flag == "-h":
-    help()
-  if flag == "-s":
-    hash_input()
-  if flag == "-f":
-    hash_file()
-except:
-  help()
+
+def main():
+  args = parse_args()
+
+  if args.string:
+    hash_input(args.string)
+  elif args.file:
+    hash_file(args.file)
+  else:
+    print(args.help)
+
+
+if __name__ == "__main__":
+  main()
