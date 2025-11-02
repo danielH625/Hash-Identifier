@@ -1,8 +1,5 @@
 # Hash-Identifier
 Uses hashes.com to identify an individual hash or a file containing hashes
 
-Usage: python3 hash-identifier.py [option] [argument]  
-The options are:  
--h		Show help options  
--f		Read the hashes from a file  
--s		Input a single hash in the cmd line
+usage: hash-identifier.py [-h] (-s STRING | -f FILE)  
+hash-identifier.py: error: one of the arguments -s/--string -f/--file is required
