@@ -7,6 +7,5 @@ Hash Identifier - Takes an individual hash or a wordlist of hashes and identifie
 
 options:  
   -h, --help            show this help message and exit  
-  -s STRING, --string STRING  
-                        Hash: Provide the individual hash (only one, if more add to a file)  
+  -s STRING, --string STRING  Hash: Provide the individual hash (only one, if more add to a file)  
   -f FILE, --file FILE  File: Provide the file name with the list of hashes (Each hash on a new line)  
